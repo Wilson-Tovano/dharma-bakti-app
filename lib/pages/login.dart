@@ -7,82 +7,28 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.brown[300],
-      body: Center(      
+      appBar: AppBar(
+        leading: IconButton(onPressed: (){Navigator.of(context).pop();}, icon: const Icon(Icons.arrow_back_ios_new)),
+      ),
+      body: Center(
         child: Column(
-          children:[
-            TextField(
-              style: const TextStyle(color: Colors.white, fontSize: 14),
+          children: [
+            Text("Selamat datang kembali! Senang melihatmu kembali!"),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
                 decoration: InputDecoration(
-                icon: const Icon(
-                  Icons.person,
-                  color: Colors.white,
+                  border: OutlineInputBorder(),
+                  hintText: 'Masukkan e-mail kamu',
+                  fillColor: Colors.grey,
+                  
                 ),
-                hintText: "Nama",
-                hintStyle: const TextStyle(color: Colors.white70),
-                filled: true,
-                fillColor: Colors.grey.withOpacity(0.1),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.white70),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.white),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                    vertical: 5.0, horizontal: 10.0)),
+              ),
             ),
-            TextField(
-              style: const TextStyle(color: Colors.white, fontSize: 14),
-                decoration: InputDecoration(
-                icon: const Icon(
-                  Icons.lock,
-                  color: Colors.white,
-                ),
-                hintText: "Kata Sandi",
-                hintStyle: const TextStyle(color: Colors.white70),
-                filled: true,
-                fillColor: Colors.grey.withOpacity(0.1),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.white70),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.white),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                    vertical: 5.0, horizontal: 10.0)),
-            ),
-            TextField(
-              style: const TextStyle(color: Colors.white, fontSize: 14),
-                decoration: InputDecoration(
-                icon: const Icon(
-                  Icons.lock_open,
-                  color: Colors.white,
-                ),
-                hintText: "Konfirmasi Kata Sandi",
-                hintStyle: const TextStyle(color: Colors.white70),
-                filled: true,
-                fillColor: Colors.grey.withOpacity(0.1),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.white70),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.white),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                    vertical: 5.0, horizontal: 10.0)),
-            ),
-            ElevatedButton(onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard()));
-            }, child: Text("Masuk"))
           ]
-        ),
+        )
       ),
     );
+      
   }
 }
