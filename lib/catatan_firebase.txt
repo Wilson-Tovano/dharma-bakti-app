@@ -1,0 +1,18 @@
+Create project
+
+Ambil ID Application dari builder.gradle
+
+Paste ke website firebase, next
+
+Download file .sjon ke android -> app
+
+Copy gsm pertama ke file settings.gradle
+
+Copy gsm kedua ke file build.gradle
+
+
+
+==================================
+
+WidgetsFlutterBinding.ensureInitialized();
+Firebase.initializeApp();

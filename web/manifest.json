@@ -1,6 +1,6 @@
 {
-    "name": "main_application",
-    "short_name": "main_application",
+    "name": "dharma_bakti_app",
+    "short_name": "dharma_bakti_app",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

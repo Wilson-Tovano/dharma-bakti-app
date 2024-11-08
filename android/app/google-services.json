@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "809630567810",
+    "project_id": "dharma-bakti-app-95c3e",
+    "storage_bucket": "dharma-bakti-app-95c3e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:809630567810:android:19a34abbf5d6fa80b6939b",
+        "android_client_info": {
+          "package_name": "com.example.dharma_bakti_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3qKT7_XuffYgaderMP_f3iD4Csorth-U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

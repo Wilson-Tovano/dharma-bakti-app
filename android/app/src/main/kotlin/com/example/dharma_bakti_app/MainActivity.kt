@@ -1,4 +1,4 @@
-package com.example.main_application
+package com.example.dharma_bakti_app
 
 import io.flutter.embedding.android.FlutterActivity
 

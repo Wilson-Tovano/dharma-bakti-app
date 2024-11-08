@@ -1,45 +1,50 @@
 import 'package:dharma_bakti_app/auth_services.dart';
 import 'package:dharma_bakti_app/constants/global_constants.dart';
 import 'package:dharma_bakti_app/pages/home.dart';
+import 'package:dharma_bakti_app/pages/registration_succeed.dart';
 import 'package:dharma_bakti_app/widgets/primary_button.dart';
 import 'package:dharma_bakti_app/widgets/textfield_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginPage extends StatefulWidget {
-  LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  String email = '', password = '';
 
   Future<void> _saveLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isLoggedIn', true);
   }
 
-  void updateFormValue(){
-    setState(() {
-      email = _emailController.text;
-      password = _passwordController.text;
-    });
-  }
-
-  void clearControllers() {
-    // Dispose of the controllers when the widget is removed
-    _emailController.clear();
-    _passwordController.clear();
-    // super.clear();
-  }
+  String email = '', password = '';
+    
+    void updateFormValue(){
+      setState(() {
+        email = _emailController.text;
+        password = _passwordController.text;
+      });
+    }
+  
+    void clearControllers() {
+      // Dispose of the controllers when the widget is removed
+      _emailController.clear();
+      _passwordController.clear();
+      // super.dispose();
+    }
 
   @override
   Widget build(BuildContext context) {
+    
+
     return Scaffold(
       appBar: AppBar(
         leading: Container(
@@ -83,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                         child: SizedBox(
                           width: 270,
                           child: Text(
-                            "Selamat datang kembali! Senang melihatmu kembali!", 
+                            "Halo! Silahkan Daftar untuk Memulai.", 
                             style: GoogleFonts.poppins(
                               fontSize: 23,
                             ),
@@ -93,8 +98,9 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ],
                   ),
-                  TextFieldCustom(text: 'Masukkan E-Mail Kamu', controller: _emailController, isPassword: false),
-                  TextFieldCustom(text: 'Masukkan Password Kamu', controller: _passwordController, isPassword: true),
+                  TextFieldCustom(text: 'Nama Pengguna', controller: _usernameController, isPassword: false),
+                  TextFieldCustom(text: 'E-mail', controller: _emailController, isPassword: false),
+                  TextFieldCustom(text: 'Password', controller: _passwordController, isPassword: false),
                   const SizedBox(height: 50),
 
                   // Here login button do not use primaryButton widget because Firebase Authentication inside onPressed
@@ -105,47 +111,26 @@ class _LoginPageState extends State<LoginPage> {
                       width: 1000,
                       child: ElevatedButton(
                         onPressed: () async {
+                          updateFormValue();
+                          print("ini controller " + _emailController.text);
+                          print("ini controller juga " + _passwordController.text);
+  
 
-                          // print("ini controller " + _emailController.text);
-                          // print("ini controller juga " + _passwordController.text);
-
-                          final message = await AuthService().login(
+                          final message = await AuthService().registration(
                             email: _emailController.text,
                             password: _passwordController.text,
-                            // email: 'q@gmail.com',
-                            // password: '12345678',
                           );
-
-                          // print(message);
-
-                          if (message != null && message.contains('Success')) {
+                          if (message!.contains('Sukses')) {
                             clearControllers();
-                            // Save login status to SharedPreferences
-                            await _saveLoginStatus();
-
-
-
-                            // Navigate to the Home screen
                             Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                builder: (context) => const HomePage(),
-                              ),
-                            );
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Berhasil login"),
-                              ),
-                            );
-                            
-                          }else{
-                            clearControllers();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(message ?? "Login gagal, coba lagi!"),
-                              ),
-                            );
+                                MaterialPageRoute(builder: (context) => const InitialSucceedPage(flag: 'login')));
                           }
+                          clearControllers();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(message),
+                            ),
+                          );  
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primaryColor,
@@ -153,7 +138,7 @@ class _LoginPageState extends State<LoginPage> {
                           elevation: 0,
                           shadowColor: Colors.transparent
                         ), 
-                        child: Text("Login", style: GoogleFonts.poppins(fontWeight: FontWeight.bold),)
+                        child: Text("Daftar", style: GoogleFonts.poppins(fontWeight: FontWeight.bold),)
                       ),
                     ),
                   )
