@@ -12,50 +12,37 @@ class InitialPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/images/splash.png'),
-              fit: BoxFit.cover
-            ),
-          ),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  "assets/images/db_logo.png",
-                  width: 250,
-                  height: 250,
+          child: Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage('assets/images/splash.png'),
+                    fit: BoxFit.cover),
+              ),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      "assets/images/db_logo.png",
+                      width: 250,
+                      height: 250,
+                    ),
+                    Text("Mengubah Tantangan Menjadi Peluang",
+                        style: GoogleFonts.poppins(
+                            fontSize: 12, color: Colors.grey)),
+                    const SizedBox(height: 100),
+                    PrimaryButton(
+                        color: AppColors.primaryColor,
+                        text: "Login",
+                        nextPage: LoginPage()),
+                    const SizedBox(height: 15),
+                    PrimaryButton(
+                        color: AppColors.secondaryColor,
+                        text: "Register",
+                        nextPage: const RegisterPage()),
+                  ],
                 ),
-                Text(
-                  "Mengubah Tantangan Menjadi Peluang", 
-                  style: GoogleFonts.poppins(
-                    fontSize: 12,
-                    color: Colors.grey
-                  )
-                ),
-                const SizedBox(
-                  height: 100
-                ),
-                PrimaryButton(
-                  color: AppColors.primaryColor, text: "Login", nextPage: LoginPage()
-                ),
-                const SizedBox(
-                  height: 15
-                ),
-                PrimaryButton(
-                  color: AppColors.secondaryColor, text: "Register", nextPage: RegisterPage()
-                ),
-              ],
-            ),
-          )
-        )  
-      ),
+              ))),
     );
-    
-    
-    
-    
   }
 }

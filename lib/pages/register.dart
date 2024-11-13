@@ -1,7 +1,7 @@
 import 'package:dharma_bakti_app/auth_services.dart';
 import 'package:dharma_bakti_app/constants/global_constants.dart';
-import 'package:dharma_bakti_app/pages/home.dart';
-import 'package:dharma_bakti_app/pages/registration_succeed.dart';
+import 'package:dharma_bakti_app/pages/dashboard.dart';
+import 'package:dharma_bakti_app/pages/initial_succeed.dart';
 import 'package:dharma_bakti_app/widgets/primary_button.dart';
 import 'package:dharma_bakti_app/widgets/textfield_custom.dart';
 import 'package:flutter/material.dart';
@@ -26,26 +26,25 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   String email = '', password = '';
-    
-    void updateFormValue(){
-      setState(() {
-        email = _emailController.text;
-        password = _passwordController.text;
-      });
-    }
-  
-    void clearControllers() {
-      // Dispose of the controllers when the widget is removed
-      _emailController.clear();
-      _passwordController.clear();
-      // super.dispose();
-    }
+
+  void updateFormValue() {
+    setState(() {
+      email = _emailController.text;
+      password = _passwordController.text;
+    });
+  }
+
+  void clearControllers() {
+    // Dispose of the controllers when the widget is removed
+    _emailController.clear();
+    _passwordController.clear();
+    // super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    
-
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: Container(
           decoration: BoxDecoration(
@@ -53,68 +52,75 @@ class _RegisterPageState extends State<RegisterPage> {
             borderRadius: BorderRadius.circular(20),
           ),
           child: IconButton(
-            onPressed: (){
+            onPressed: () {
               Navigator.of(context).pop();
-            }, 
+            },
             icon: const Icon(
-                Icons.arrow_back_ios_new,
-                size: 15,
-              ),
+              Icons.arrow_back_ios_new,
+              size: 15,
             ),
+          ),
         ),
       ),
-      
+
       // GestureDetection wraps as main wrapper here, so that we can unshow our keyboard by clicking somewhere
       body: GestureDetector(
-        onTap: (){
+        onTap: () {
           FocusScope.of(context).unfocus();
         },
         child: Center(
           child: Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/splash.png'),
-                fit: BoxFit.cover
-              ),
+                  image: AssetImage('assets/images/splash.png'),
+                  fit: BoxFit.cover),
             ),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SizedBox(
-                          width: 270,
-                          child: Text(
-                            "Halo! Silahkan Daftar untuk Memulai.", 
-                            style: GoogleFonts.poppins(
-                              fontSize: 23,
-                            ),
-                            textAlign: TextAlign.left,
+              child: Column(children: [
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: 270,
+                        child: Text(
+                          "Halo! Silahkan Daftar untuk Memulai.",
+                          style: GoogleFonts.poppins(
+                            fontSize: 23,
                           ),
+                          textAlign: TextAlign.left,
                         ),
                       ),
-                    ],
-                  ),
-                  TextFieldCustom(text: 'Nama Pengguna', controller: _usernameController, isPassword: false),
-                  TextFieldCustom(text: 'E-mail', controller: _emailController, isPassword: false),
-                  TextFieldCustom(text: 'Password', controller: _passwordController, isPassword: false),
-                  const SizedBox(height: 50),
+                    ),
+                  ],
+                ),
+                TextFieldCustom(
+                    text: 'Nama Pengguna',
+                    controller: _usernameController,
+                    isPassword: false),
+                TextFieldCustom(
+                    text: 'E-mail',
+                    controller: _emailController,
+                    isPassword: false),
+                TextFieldCustom(
+                    text: 'Password',
+                    controller: _passwordController,
+                    isPassword: false),
+                const SizedBox(height: 50),
 
-                  // Here login button do not use primaryButton widget because Firebase Authentication inside onPressed
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: SizedBox(
-                      height: 50,
-                      width: 1000,
-                      child: ElevatedButton(
+                // Here login button do not use primaryButton widget because Firebase Authentication inside onPressed
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: SizedBox(
+                    height: 50,
+                    width: 1000,
+                    child: ElevatedButton(
                         onPressed: () async {
                           updateFormValue();
                           print("ini controller " + _emailController.text);
-                          print("ini controller juga " + _passwordController.text);
-  
+                          print("ini controller juga " +
+                              _passwordController.text);
 
                           final message = await AuthService().registration(
                             email: _emailController.text,
@@ -123,32 +129,35 @@ class _RegisterPageState extends State<RegisterPage> {
                           if (message!.contains('Sukses')) {
                             clearControllers();
                             Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(builder: (context) => const InitialSucceedPage(flag: 'login')));
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const InitialSucceedPage(
+                                            flag: 'register ')));
                           }
                           clearControllers();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(message),
                             ),
-                          );  
+                          );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primaryColor,
-                          foregroundColor: Colors.white,
-                          elevation: 0,
-                          shadowColor: Colors.transparent
-                        ), 
-                        child: Text("Daftar", style: GoogleFonts.poppins(fontWeight: FontWeight.bold),)
-                      ),
-                    ),
-                  )
-                ]
-              ),
+                            backgroundColor: AppColors.primaryColor,
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            shadowColor: Colors.transparent),
+                        child: Text(
+                          "Daftar",
+                          style:
+                              GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                        )),
+                  ),
+                )
+              ]),
             ),
           ),
         ),
       ),
     );
-      
   }
 }
