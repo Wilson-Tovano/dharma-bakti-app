@@ -1,16 +1,16 @@
+import 'package:camera/camera.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dharma_bakti_app/constants/global_constants.dart';
+import 'package:dharma_bakti_app/pages/camera.dart';
 import 'package:dharma_bakti_app/pages/info/info.dart';
 import 'package:dharma_bakti_app/pages/initial.dart';
 import 'package:dharma_bakti_app/services/http_helper.dart';
-import 'package:dharma_bakti_app/services/url_launcher.dart';
 import 'package:dharma_bakti_app/widgets/app_bar_custom.dart';
 import 'package:dharma_bakti_app/widgets/search_bar.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class Dashboard extends StatefulWidget {
   Dashboard({super.key});
@@ -20,6 +20,17 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  List<CameraDescription> camerasInit = [];
+
+  bool _isCamerasInitialized = false;
+
+  Future<void> initializingCameras() async {
+    camerasInit = await availableCameras();
+    setState(() {
+      _isCamerasInitialized = true;
+    });
+  }
+
   FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   Future<void> logAnalytics(String buttonName) async {
     await analytics
@@ -51,7 +62,6 @@ class _DashboardState extends State<Dashboard> {
     Icons.currency_exchange,
     Icons.timelapse_outlined
   ];
-  // List<Widget> page = [InfoPage(), InfoPage(), InfoPage(), InfoPage()];
 
   HttpHelper? httpHelperNews;
   List? news;
@@ -69,11 +79,19 @@ class _DashboardState extends State<Dashboard> {
   void initState() {
     httpHelperNews = HttpHelper();
     initializingNews();
+    initializingCameras();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> page = [
+      const InfoPage(),
+      _isCamerasInitialized ? CameraScreen(cameras: camerasInit) : InfoPage(),
+      const InfoPage(),
+      const InfoPage()
+    ];
+
     return PopScope(
       canPop: false,
       child: Scaffold(
@@ -204,7 +222,7 @@ class _DashboardState extends State<Dashboard> {
                                 logAnalytics('Tombol_${menuLabel[index]}');
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (context) => InfoPage2(),
+                                    builder: (context) => page[index],
                                   ),
                                 );
                               },

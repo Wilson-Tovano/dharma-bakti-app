@@ -1,21 +1,23 @@
 import 'package:dharma_bakti_app/constants/global_constants.dart';
+import 'package:dharma_bakti_app/pages/absence.dart';
 import 'package:dharma_bakti_app/pages/dashboard.dart';
 import 'package:dharma_bakti_app/pages/login.dart';
 import 'package:dharma_bakti_app/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class InitialSucceedPage extends StatelessWidget {
-  const InitialSucceedPage({super.key, required this.flag});
+class AbsenceSucceedPage extends StatelessWidget {
+  const AbsenceSucceedPage({super.key, required this.flag});
 
   final String flag;
 
   @override
   Widget build(BuildContext context) {
-    String displayText =
-        flag == 'login' ? 'Login Berhasil!' : 'Registrasi Berhasil';
-    String buttonText = flag == 'login' ? 'Masuk' : 'Kembali ke Login';
-    Widget nextPage = flag == 'login' ? Dashboard() : LoginPage();
+    String displayText = flag == 'absen masuk'
+        ? 'Absen Masuk Berhasil!'
+        : 'Absen Keluar Berhasil!';
+    String buttonText = 'Kembali ke Absen';
+    Widget nextPage = AbsencePage();
 
     return Scaffold(
         // appBar: AppBar(

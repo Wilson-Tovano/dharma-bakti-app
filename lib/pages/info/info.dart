@@ -9,8 +9,8 @@ import 'package:dharma_bakti_app/widgets/app_bar_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class InfoPage2 extends StatelessWidget {
-  const InfoPage2({super.key});
+class InfoPage extends StatelessWidget {
+  const InfoPage({super.key});
 
   @override
   Widget build(BuildContext context) {
