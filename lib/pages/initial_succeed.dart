@@ -15,7 +15,7 @@ class InitialSucceedPage extends StatelessWidget {
     String displayText =
         flag == 'login' ? 'Login Berhasil!' : 'Registrasi Berhasil';
     String buttonText = flag == 'login' ? 'Masuk' : 'Kembali ke Login';
-    Widget nextPage = flag == 'login' ? Dashboard() : LoginPage();
+    Widget nextPage = flag == 'login' ? Dashboard() : const LoginPage();
 
     return Scaffold(
         // appBar: AppBar(

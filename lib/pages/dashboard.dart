@@ -2,8 +2,10 @@ import 'package:camera/camera.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dharma_bakti_app/constants/global_constants.dart';
 import 'package:dharma_bakti_app/pages/camera.dart';
+import 'package:dharma_bakti_app/pages/event_screen.dart';
 import 'package:dharma_bakti_app/pages/info/info.dart';
 import 'package:dharma_bakti_app/pages/initial.dart';
+import 'package:dharma_bakti_app/pages/payment/payment_amount.dart';
 import 'package:dharma_bakti_app/services/http_helper.dart';
 import 'package:dharma_bakti_app/widgets/app_bar_custom.dart';
 import 'package:dharma_bakti_app/widgets/search_bar.dart';
@@ -88,8 +90,8 @@ class _DashboardState extends State<Dashboard> {
     List<Widget> page = [
       const InfoPage(),
       _isCamerasInitialized ? CameraScreen(cameras: camerasInit) : InfoPage(),
-      const InfoPage(),
-      const InfoPage()
+      PaymentAmountScreen(),
+      EventScreen(),
     ];
 
     return PopScope(

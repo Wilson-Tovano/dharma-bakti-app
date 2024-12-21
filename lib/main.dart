@@ -1,10 +1,7 @@
 import 'package:dharma_bakti_app/pages/dashboard.dart';
-import 'package:dharma_bakti_app/pages/login.dart';
 import 'package:dharma_bakti_app/pages/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 //Khusus jika pakai FirebaseAnalytics
@@ -34,29 +31,37 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<bool>(
-        future: _isUserLoggedIn(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            // Show a loading indicator while waiting for SharedPreferences
-            return const MaterialApp(
-              home: Scaffold(
-                body: Center(child: CircularProgressIndicator()),
+      future: _isUserLoggedIn(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // Show a loading indicator while waiting for SharedPreferences
+          return const MaterialApp(
+            home: Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            ),
+          );
+        } else if (snapshot.hasData) {
+          print("data+" + snapshot.data.toString());
+          // Navigate based on login status
+          bool isLoggedIn = snapshot.data ?? false;
+          return MaterialApp(
+            home: isLoggedIn ? Dashboard() : const SplashScreenPage(),
+            debugShowCheckedModeBanner: false,
+          );
+        } else {
+          return const MaterialApp(
+            home: Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
               ),
-            );
-          } else if (snapshot.hasData) {
-            print("data+" + snapshot.data.toString());
-            // Navigate based on login status
-            bool isLoggedIn = snapshot.data ?? false;
-            return MaterialApp(
-              home: isLoggedIn ? Dashboard() : const SplashScreenPage(),
-              debugShowCheckedModeBanner: false,
-            );
-          } else {
-            return const MaterialApp(
-              home: SplashScreenPage(),
-              debugShowCheckedModeBanner: false,
-            );
-          }
-        });
+            ),
+          );
+          // return const MaterialApp(
+          //   home: SplashScreenPage(),
+          //   debugShowCheckedModeBanner: false,
+          // );
+        }
+      },
+    );
   }
 }

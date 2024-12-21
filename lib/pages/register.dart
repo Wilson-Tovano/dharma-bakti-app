@@ -7,6 +7,7 @@ import 'package:dharma_bakti_app/widgets/textfield_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dharma_bakti_app/services/firestore_service.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -19,16 +20,18 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final FirestoreDbService firestoreDbService = FirestoreDbService();
 
   Future<void> _saveLoginStatus() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isLoggedIn', true);
   }
 
-  String email = '', password = '';
+  String username = '', email = '', password = '';
 
   void updateFormValue() {
     setState(() {
+      username = _usernameController.text;
       email = _emailController.text;
       password = _passwordController.text;
     });
@@ -36,6 +39,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void clearControllers() {
     // Dispose of the controllers when the widget is removed
+    _usernameController.clear();
     _emailController.clear();
     _passwordController.clear();
     // super.dispose();
@@ -127,6 +131,8 @@ class _RegisterPageState extends State<RegisterPage> {
                             password: _passwordController.text,
                           );
                           if (message!.contains('Sukses')) {
+                            firestoreDbService.createMhs(
+                                username, email, password);
                             clearControllers();
                             Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
