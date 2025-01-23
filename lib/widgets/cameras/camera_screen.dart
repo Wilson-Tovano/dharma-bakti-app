@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:camera/camera.dart';
 import 'package:dharma_bakti_app/constants/global_constants.dart';
+import 'package:dharma_bakti_app/widgets/cameras/camera_confirm_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -161,7 +162,7 @@ class _CameraScreenState extends State<CameraScreen> {
                           decoration: const BoxDecoration(
                               color: Colors.red, shape: BoxShape.circle),
                           child: IconButton(
-                            icon: Icon(Icons.close,
+                            icon: const Icon(Icons.close,
                                 color: Colors.white, size: 40),
                             onPressed: () => Navigator.pop(context),
                           ),
@@ -178,96 +179,6 @@ class _CameraScreenState extends State<CameraScreen> {
             return Center(child: CircularProgressIndicator());
           }
         },
-      ),
-    );
-  }
-}
-
-class ConfirmPhotoScreen extends StatelessWidget {
-  final String imagePath;
-  final String currentTime;
-
-  ConfirmPhotoScreen({required this.imagePath, required this.currentTime});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding:
-            const EdgeInsets.only(top: 50, left: 30, right: 30, bottom: 50),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              textAlign: TextAlign.center,
-              currentTime,
-              style: GoogleFonts.poppins(
-                  textStyle: TextStyle(
-                fontWeight: FontWeight.w900,
-                color: AppColors.labelTextColor,
-                fontSize: 40,
-              )),
-            ),
-            // Instruction Text
-            Text(
-              "Konfirmasi Foto",
-              style: GoogleFonts.poppins(),
-            ),
-            Expanded(
-              child: Container(
-                margin: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.file(File(imagePath)),
-                ),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    style: ButtonStyle(
-                        elevation: const WidgetStatePropertyAll(0),
-                        backgroundColor: WidgetStateProperty.all<Color>(
-                            AppColors.labelTextColor)),
-                    child: Text(
-                      'ABSEN SEKARANG',
-                      style: GoogleFonts.overpass(
-                          textStyle: TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold)),
-                    )),
-                SizedBox(
-                  width: 30,
-                ),
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    style: ButtonStyle(
-                        elevation: const WidgetStatePropertyAll(0),
-                        backgroundColor: WidgetStateProperty.all<Color>(
-                            AppColors.thirdColor)),
-                    child: Text(
-                      'ULANGI FOTO',
-                      style: GoogleFonts.overpass(
-                          textStyle: TextStyle(
-                              color: AppColors.labelTextColor,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold)),
-                    )),
-              ],
-            ),
-          ],
-        ),
       ),
     );
   }

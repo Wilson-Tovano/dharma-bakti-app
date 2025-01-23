@@ -1,17 +1,23 @@
 import 'package:camera/camera.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dharma_bakti_app/constants/global_constants.dart';
-import 'package:dharma_bakti_app/pages/camera.dart';
+import 'package:dharma_bakti_app/globals/user_info.dart';
+import 'package:dharma_bakti_app/pages/attendance_screens/attendance_main.dart';
+import 'package:dharma_bakti_app/widgets/cameras/camera_screen.dart';
 import 'package:dharma_bakti_app/pages/event_screen.dart';
+import 'package:dharma_bakti_app/pages/assignment_screen.dart';
 import 'package:dharma_bakti_app/pages/info/info.dart';
 import 'package:dharma_bakti_app/pages/initial.dart';
 import 'package:dharma_bakti_app/pages/payment/payment_amount.dart';
+import 'package:dharma_bakti_app/services/firestore_service.dart';
 import 'package:dharma_bakti_app/services/http_helper.dart';
 import 'package:dharma_bakti_app/widgets/app_bar_custom.dart';
 import 'package:dharma_bakti_app/widgets/search_bar.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Dashboard extends StatefulWidget {
@@ -22,9 +28,39 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  late InterstitialAd _interstitialAd;
+  bool _isInterstitialAdReady = false;
+
   List<CameraDescription> camerasInit = [];
 
   bool _isCamerasInitialized = false;
+
+  void _loadInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: "ca-app-pub-3940256099942544/1033173712",
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          ad.fullScreenContentCallback =
+              FullScreenContentCallback(onAdDismissedFullScreenContent: (ad) {
+            print("Close Interstitial Ad");
+            SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+                overlays: SystemUiOverlay.values);
+          });
+          setState(() {
+            _isInterstitialAdReady = true;
+            _interstitialAd = ad;
+          });
+
+          SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+        },
+        onAdFailedToLoad: (error) {
+          _isInterstitialAdReady = false;
+          _interstitialAd.dispose();
+        },
+      ),
+    );
+  }
 
   Future<void> initializingCameras() async {
     camerasInit = await availableCameras();
@@ -57,12 +93,19 @@ class _DashboardState extends State<Dashboard> {
     await prefs.setBool('isLoggedIn', false);
   }
 
-  List<String> menuLabel = ['INFO', 'ABSENSI', 'PEMBAYARAN', 'EVENT'];
+  List<String> menuLabel = [
+    'INFO',
+    'ABSENSI',
+    'PEMBAYARAN',
+    'TUGAS',
+    'Lainnya'
+  ];
   List<IconData> menuIcon = [
     Icons.info,
     Icons.list,
     Icons.currency_exchange,
-    Icons.timelapse_outlined
+    Icons.book,
+    Icons.timelapse_outlined,
   ];
 
   HttpHelper? httpHelperNews;
@@ -79,6 +122,7 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   void initState() {
+    print("cek nama display " + studentNameFromFirestore);
     httpHelperNews = HttpHelper();
     initializingNews();
     initializingCameras();
@@ -89,8 +133,13 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     List<Widget> page = [
       const InfoPage(),
-      _isCamerasInitialized ? CameraScreen(cameras: camerasInit) : InfoPage(),
+
+      _isCamerasInitialized
+          ? AttendanceMainScreen(cameras: camerasInit)
+          : InfoPage(),
+      // AttendanceMainScreen(cameras: cameras),
       PaymentAmountScreen(),
+      AssignmentScreen(),
       EventScreen(),
     ];
 
@@ -186,7 +235,7 @@ class _DashboardState extends State<Dashboard> {
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(5, (index) {
+                            children: List.generate(4, (index) {
                               return GestureDetector(
                                 onTap: () {
                                   _carouselController.animateToPage(index);
@@ -267,130 +316,146 @@ class _DashboardState extends State<Dashboard> {
                           topRight: Radius.circular(20),
                         ),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 30, top: 10),
-                            child: Text(
-                              "Berita Terbaru",
-                              style: GoogleFonts.overpass(
-                                  fontWeight: FontWeight.w900,
-                                  color: AppColors.labelTextColor,
-                                  fontSize: 20),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 30, top: 10),
+                              child: Text(
+                                "Berita Terbaru",
+                                style: GoogleFonts.overpass(
+                                    fontWeight: FontWeight.w900,
+                                    color: AppColors.labelTextColor,
+                                    fontSize: 20),
+                              ),
                             ),
-                          ),
-                          CarouselSlider(
-                            items: List.generate(5, (index) {
-                              return Container(
-                                height: 200,
-                                width: 300,
-                                decoration: const BoxDecoration(
-                                    // border: Border.all(color: Colors.black),
-                                    color: Colors.white),
-                                child: news == null
-                                    ? const Center(
-                                        child: CircularProgressIndicator())
-                                    : Column(
-                                        children: [
-                                          Container(
-                                              height: 100,
-                                              width: 300,
-                                              child: Image.network(
-                                                news![index].imgUrl,
-                                                fit: BoxFit.cover,
-                                                errorBuilder: (BuildContext
-                                                        context,
-                                                    Object exception,
-                                                    StackTrace? stackTrace) {
-                                                  return Image.asset(
-                                                    'assets/images/db_logo.png',
-                                                    fit: BoxFit.cover,
-                                                  );
-                                                },
-                                              )),
-                                          Container(
-                                              child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  news![index].title,
-                                                  style: GoogleFonts.overpass(
-                                                      textStyle: const TextStyle(
+                            CarouselSlider(
+                              items: List.generate(5, (index) {
+                                return Container(
+                                  height: 200,
+                                  width: 300,
+                                  decoration: const BoxDecoration(
+                                      // border: Border.all(color: Colors.black),
+                                      color: Colors.white),
+                                  child: news == null
+                                      ? const Center(
+                                          child: CircularProgressIndicator())
+                                      : Column(
+                                          children: [
+                                            Container(
+                                                height: 100,
+                                                width: 300,
+                                                child: Image.network(
+                                                  news![index].imgUrl,
+                                                  fit: BoxFit.cover,
+                                                  errorBuilder: (BuildContext
+                                                          context,
+                                                      Object exception,
+                                                      StackTrace? stackTrace) {
+                                                    return Image.asset(
+                                                      'assets/images/db_logo.png',
+                                                      fit: BoxFit.cover,
+                                                    );
+                                                  },
+                                                )),
+                                            Container(
+                                                child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    news![index].title,
+                                                    style: GoogleFonts.overpass(
+                                                        textStyle: const TextStyle(
+                                                            color: AppColors
+                                                                .labelTextColor,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        news![index]
+                                                            .date
+                                                            .substring(0, 10),
+                                                        style: GoogleFonts
+                                                            .overpass(
+                                                                textStyle:
+                                                                    const TextStyle(
                                                           color: AppColors
                                                               .labelTextColor,
-                                                          fontWeight:
-                                                              FontWeight.bold)),
-                                                  maxLines: 2,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                                const SizedBox(
-                                                  height: 10,
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      news![index]
-                                                          .date
-                                                          .substring(0, 10),
-                                                      style:
-                                                          GoogleFonts.overpass(
-                                                              textStyle:
-                                                                  const TextStyle(
-                                                        color: AppColors
-                                                            .labelTextColor,
-                                                      )),
-                                                    ),
-                                                    Container(
-                                                      width: 140,
-                                                      height: 30,
-                                                      child: ElevatedButton(
+                                                        )),
+                                                      ),
+                                                      Container(
+                                                        width: 140,
+                                                        height: 30,
+                                                        child: ElevatedButton(
                                                           onPressed: () {
                                                             // Tembak launchUrl
+
+                                                            _loadInterstitialAd();
+                                                            if (_isInterstitialAdReady) {
+                                                              _interstitialAd
+                                                                  .show();
+                                                            }
                                                           },
                                                           style: ButtonStyle(
-                                                              elevation:
-                                                                  const WidgetStatePropertyAll(
-                                                                      0),
-                                                              backgroundColor:
-                                                                  WidgetStateProperty.all<
-                                                                          Color>(
-                                                                      AppColors
-                                                                          .labelTextColor)),
+                                                            elevation:
+                                                                const WidgetStatePropertyAll(
+                                                                    0),
+                                                            backgroundColor:
+                                                                WidgetStateProperty.all<
+                                                                        Color>(
+                                                                    AppColors
+                                                                        .labelTextColor),
+                                                          ),
                                                           child: Text(
                                                             'Selengkapnya >',
-                                                            style: GoogleFonts.overpass(
-                                                                textStyle: TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        10)),
-                                                          )),
-                                                    )
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          ))
-                                        ],
-                                      ),
-                              );
-                            }),
-                            options: CarouselOptions(
-                              height: 200,
-                              viewportFraction: 1,
-                              enableInfiniteScroll: false,
+                                                            style: GoogleFonts
+                                                                .overpass(
+                                                              textStyle:
+                                                                  const TextStyle(
+                                                                      color:
+                                                                          Colors
+                                                                              .white,
+                                                                      fontSize:
+                                                                          10),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                            ))
+                                          ],
+                                        ),
+                                );
+                              }),
+                              options: CarouselOptions(
+                                height: 200,
+                                viewportFraction: 1,
+                                enableInfiniteScroll: false,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   )
@@ -420,9 +485,12 @@ class AppSideMenu extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           UserAccountsDrawerHeader(
-            accountName: Text("Delvin Dwiantono", style: GoogleFonts.poppins()),
-            accountEmail:
-                Text("delvindwiantono@gmail.com", style: GoogleFonts.poppins()),
+            accountName: Text(studentNameFromFirestore,
+                style: GoogleFonts.poppins(
+                    color: Colors.white, fontWeight: FontWeight.bold)),
+            accountEmail: Text(studentEmailFromFirestore,
+                style: GoogleFonts.poppins(
+                    color: Colors.white, fontWeight: FontWeight.bold)),
             currentAccountPicture: CircleAvatar(
               child: ClipOval(
                 child: Image.network(
@@ -434,12 +502,13 @@ class AppSideMenu extends StatelessWidget {
               ),
             ),
             decoration: const BoxDecoration(
-                color: Colors.blue,
-                image: DecorationImage(
-                  image: NetworkImage(
-                      'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/The_Forbidden_City_-_View_from_Coal_Hill.jpg/1280px-The_Forbidden_City_-_View_from_Coal_Hill.jpg'),
-                  fit: BoxFit.cover,
-                )),
+              // color: Color.fromARGB(255, 253, 236, 217),
+              image: DecorationImage(
+                image: NetworkImage(
+                    'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/The_Forbidden_City_-_View_from_Coal_Hill.jpg/1280px-The_Forbidden_City_-_View_from_Coal_Hill.jpg'),
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
           ListTile(
             leading: const Icon(Icons.share),

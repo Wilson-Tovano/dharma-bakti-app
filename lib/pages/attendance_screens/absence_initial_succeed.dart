@@ -1,8 +1,7 @@
 import 'package:dharma_bakti_app/constants/global_constants.dart';
-import 'package:dharma_bakti_app/pages/absence.dart';
+import 'package:dharma_bakti_app/pages/attendance_screens/X-absence.dart';
+import 'package:dharma_bakti_app/pages/attendance_screens/attendance_main.dart';
 import 'package:dharma_bakti_app/pages/dashboard.dart';
-import 'package:dharma_bakti_app/pages/login.dart';
-import 'package:dharma_bakti_app/widgets/primary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -16,8 +15,8 @@ class AbsenceSucceedPage extends StatelessWidget {
     String displayText = flag == 'absen masuk'
         ? 'Absen Masuk Berhasil!'
         : 'Absen Keluar Berhasil!';
-    String buttonText = 'Kembali ke Absen';
-    Widget nextPage = AbsencePage();
+    String buttonText = 'Kembali ke Dashboard';
+    Widget nextPage = Dashboard();
 
     return Scaffold(
         // appBar: AppBar(
@@ -53,12 +52,6 @@ class AbsenceSucceedPage extends StatelessWidget {
               style: GoogleFonts.poppins(
                 fontSize: 23,
               ),
-            ),
-            Text(
-              flag == 'login'
-                  ? 'Selamat Datang Delvin Dwiantono'
-                  : 'Akun Kamu Berhasil Dibuat',
-              style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey),
             ),
             const SizedBox(
               height: 40,

@@ -1,6 +1,7 @@
 import 'package:dharma_bakti_app/auth_services.dart';
 import 'package:dharma_bakti_app/constants/global_constants.dart';
 import 'package:dharma_bakti_app/pages/initial_succeed.dart';
+import 'package:dharma_bakti_app/services/firestore_service.dart';
 import 'package:dharma_bakti_app/widgets/textfield_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,6 +15,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  FirestoreDbService dbService = FirestoreDbService();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   String email = '', password = '';
@@ -45,9 +47,9 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         leading: Container(
           decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.grey.withOpacity(0.4),
-            ),
+            // border: Border.all(
+            //   color: Colors.grey.withOpacity(0.4),
+            // ),
             borderRadius: BorderRadius.circular(20),
           ),
           child: IconButton(
@@ -113,6 +115,7 @@ class _LoginPageState extends State<LoginPage> {
                       height: 50,
                       width: 1000,
                       child: ElevatedButton(
+                        key: const Key('loginBtn'),
                         onPressed: () async {
                           // print("ini controller " + _emailController.text);
                           // print("ini controller juga " + _passwordController.text);
@@ -127,6 +130,9 @@ class _LoginPageState extends State<LoginPage> {
                           // print(message);
 
                           if (message != null && message.contains('Success')) {
+                            await dbService.getNamaByEmailAndPassword(
+                                _emailController.text,
+                                _passwordController.text);
                             clearControllers();
 
                             // Navigate to the Home screen

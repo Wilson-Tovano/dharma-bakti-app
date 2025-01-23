@@ -52,7 +52,7 @@ class _RegisterPageState extends State<RegisterPage> {
       appBar: AppBar(
         leading: Container(
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.withOpacity(0.4)),
+            // border: Border.all(color: Colors.grey.withOpacity(0.4)),
             borderRadius: BorderRadius.circular(20),
           ),
           child: IconButton(

@@ -1,4 +1,5 @@
 import 'package:dharma_bakti_app/constants/global_constants.dart';
+import 'package:dharma_bakti_app/globals/user_info.dart';
 import 'package:dharma_bakti_app/pages/dashboard.dart';
 import 'package:dharma_bakti_app/pages/login.dart';
 import 'package:dharma_bakti_app/widgets/primary_button.dart';
@@ -54,7 +55,7 @@ class InitialSucceedPage extends StatelessWidget {
             ),
             Text(
               flag == 'login'
-                  ? 'Selamat Datang Delvin Dwiantono'
+                  ? 'Selamat Datang $studentNameFromFirestore'
                   : 'Akun Kamu Berhasil Dibuat',
               style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey),
             ),

@@ -1,4 +1,5 @@
 import 'package:dharma_bakti_app/constants/global_constants.dart';
+import 'package:dharma_bakti_app/globals/user_info.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -52,7 +53,7 @@ class AppBarCustom extends StatelessWidget {
                         fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    'DELVIN DWIANTONO',
+                    studentNameFromFirestore,
                     style: GoogleFonts.poppins(
                         color: AppColors.labelTextColor,
                         fontSize: 20,

@@ -1,39 +1,41 @@
+import 'package:dharma_bakti_app/pages/assignment_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:dharma_bakti_app/widgets/app_bar_custom.dart';
 import 'package:dharma_bakti_app/constants/global_constants.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class EventScreen extends StatelessWidget {
-  EventScreen({super.key});
+class AssignmentScreen extends StatelessWidget {
+  AssignmentScreen({super.key});
 
   final List<Map<String, String>> events = [
     {
       'image': 'assets/images/',
-      'date': '10 November',
-      'title': 'Hari Pahlawan',
+      'mapel': 'Bahasa Indonesia',
+      'tugas': 'Latihan Praktik 2',
       'location': 'Dharma Bakti',
     },
     {
       'image': 'assets/images/',
-      'date': '12 November',
-      'title': 'Hari Ayah Sedunia',
+      'mapel': 'Biologi',
+      'tugas': 'Tugas Menanam',
       'location': 'Dharma Bakti',
     },
     {
       'image': 'assets/images/',
-      'date': '25 November',
-      'title': 'Hari Guru',
+      'mapel': 'Matematika',
+      'tugas': 'Tugas Aljabar',
       'location': 'Dharma Bakti',
     },
     {
       'image': 'assets/images/',
-      'date': '13 Desember',
-      'title': 'Hari Nusantara',
+      'mapel': 'Fisika',
+      'tugas': 'Latihan 5',
       'location': 'Dharma Bakti',
     },
     {
       'image': 'assets/images/',
-      'date': '25 Desember',
-      'title': 'Hari Natal',
+      'mapel': 'Bahasa Inggris',
+      'tugas': 'Conversation',
       'location': 'Dharma Bakti',
     },
   ];
@@ -62,20 +64,38 @@ class EventScreen extends StatelessWidget {
                     // leading: Image.asset('assets/images/1.png'),
                     leading: Image.asset('${event['image']}${index + 1}.png'),
                     title: Text(
-                      event['date']!,
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold),
+                      event['mapel']!,
+                      style: GoogleFonts.overpass(
+                          color: AppColors.labelTextColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold),
                     ),
-                    subtitle: Text(event['title']!),
+                    subtitle: Text(
+                      event['tugas']!,
+                      style: GoogleFonts.overpass(),
+                    ),
                     trailing: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          color: AppColors.labelTextColor),
                       width: 110,
                       child: TextButton(
                         onPressed: () {
                           // Tambahkan navigasi atau fungsi "Baca Selengkapnya"
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  AssignmentDetailScreen(mapel: event['mapel']),
+                            ),
+                          );
                         },
-                        child: const Text(
+                        child: Text(
                           'BACA SELENGKAPNYA',
-                          style: TextStyle(color: Colors.brown, fontSize: 10),
+                          style: GoogleFonts.overpass(
+                              color: Colors.white,
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
                         ),
                       ),
                     ),
